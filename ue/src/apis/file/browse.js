@@ -2,22 +2,27 @@ const baseApi = (process.env.VUE_APP_API_SERVER || '') + '/file/browse'
 
 export default function create(tmsAxios) {
   return {
-    schemas() {
-      return tmsAxios.get(`${baseApi}/schemas`).then(rst => rst.data.result)
+    schemas(domain, bucket) {
+      const params = { domain, bucket }
+      return tmsAxios.get(`${baseApi}/schemas`, { params }).then((rst) => rst.data.result)
     },
-    list(dirName = '') {
-      return tmsAxios.get(`${baseApi}/list?dir=${dirName}`).then(rst => {
-        rst.data.result.files.forEach(f => {
+    list(dirName = '', domain, bucket) {
+      const params = { dir: dirName }
+      if (domain !== undefined) params.domain = domain
+      if (bucket !== undefined) params.bucket = bucket
+      return tmsAxios.get(`${baseApi}/list`, { params }).then((rst) => {
+        rst.data.result.files.forEach((f) => {
           if (typeof f.info !== 'object') f.info = {}
         })
         return rst.data.result
       })
     },
-    setInfo(path, info) {
-      return tmsAxios.post(`${baseApi}/setInfo?path=${path}`, info).then(rst => rst.data.result)
+    setInfo(path, info, domain, bucket) {
+      const params = { path, domain, bucket }
+      return tmsAxios.post(`${baseApi}/setInfo`, info, { params }).then((rst) => rst.data.result)
     },
     overallSearch(params) {
-      return tmsAxios.post(`${baseApi}/listAll`, params).then(rst => rst.data.result)
-    }
+      return tmsAxios.post(`${baseApi}/listAll`, params).then((rst) => rst.data.result)
+    },
   }
 }

@@ -3,7 +3,7 @@ const log4js = require('log4js')
 log4js.configure(log4jsConfig)
 const logger = log4js.getLogger()
 
-process.on('uncatchException', function(e) {
+process.on('uncatchException', function (e) {
   logger.error('未处理异常', e)
   // eslint-disable-next-line no-process-exit
   process.exit(0)
